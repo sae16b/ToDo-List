@@ -1,0 +1,71 @@
+﻿@model IEnumerable<ToDoList.Models.LegionTask>
+
+@{
+    ViewBag.Title = "Your ToDo List";
+}
+
+
+<div class="text-center" style="margin-top: 50px">
+    <p class="display-4">Your ToDo List</p>
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <table class="table table-dark col-sm-12 col-md-7">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Text</th>
+                        <th scope="col">Finished</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{int i = 0;}
+                    @foreach (var Task in Model)
+                    {
+                        <tr id="@Task.Id">
+                            <th scope="row">@i</th>
+                            <td id="@Task.Id-Text">@Task.Text</td>
+                            <td>
+                                @if (Task.Complete)
+                                {
+                                    <input class="task-completed custom-checkbox" type="checkbox" checked />
+                                }
+                                else
+                                {
+                                    <input class="task-completed custom-checkbox" type="checkbox" />
+                                }
+                            </td>
+                        </tr>
+                        ++i;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function GetModelFromCheckBox(checkboxRef) {
+        var changedTask = $(checkboxRef).parent().parent();
+        var changedTaskId = $(changedTask).prop("id");
+        var complete = checkboxRef.checked;
+
+        var text = $(`#${changedTaskId}-Text`).text();
+
+        var task = {
+            Id: changedTaskId,
+            Text: text,
+            Complete: complete
+        }
+
+        return task;
+    }
+
+    window.onload = function () {
+        $('.task-completed').each(function() {
+            $(this).on("change", function () {
+                var task = GetModelFromCheckBox(this);
+                $.post("/edit-task", task);
+            });
+        });
+    }
+</script> 
