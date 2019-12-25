@@ -16,10 +16,29 @@ namespace ToDoList.Controllers
             this.db = db;
         }
 
+        [Route("error-page")]
+        public IActionResult Failure(string err)
+        {
+            return View("Failure", err);
+        }
+
         public IActionResult Index()
         {
             List<LegionTask> tasks = db.LegionTask.ToList();
             return View(tasks);
+        }
+
+        [Route("edit-task-page/{legionTaskId}")]
+        public IActionResult EditTask(Guid legionTaskId)
+        {
+            var legionTask = db.LegionTask.SingleOrDefault(t => t.Id == legionTaskId);
+
+            if (legionTask == null)
+            {
+                return Failure($"Could not find task with Id {legionTaskId}!");
+            }
+
+            return View(legionTask);
         }
 
         [Route("add-task")]

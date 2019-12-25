@@ -9,7 +9,7 @@
     <p class="display-4">Your ToDo List</p>
     <div class="container">
         <div class="row justify-content-md-center">
-            <table class="table table-dark col-sm-12 col-md-7">
+            <table class="table table-dark col-sm-12 col-md-7" id="tasks">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
@@ -23,7 +23,9 @@
                     {
                         <tr id="@Task.Id">
                             <th scope="row">@i</th>
-                            <td id="@Task.Id-Text">@Task.Text</td>
+                            <td id="@Task.Id-Text">
+                                <a href="/edit-task-page/@Task.Id" style="color: white;">@Task.Text</a>
+                            </td>
                             <td>
                                 @if (Task.Complete)
                                 {
@@ -39,6 +41,9 @@
                     }
                 </tbody>
             </table>
+            <div class="col-sm-12" id="tasksSpinner" style="margin-top: 40px">
+                <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status"></div>
+            </div>
         </div>
     </div>
 </div>
@@ -61,10 +66,20 @@
     }
 
     window.onload = function () {
+        var tasksContainer = $("#tasks");
+        var tasksSpinner = $("#tasksSpinner");
+        tasksSpinner.hide();
         $('.task-completed').each(function() {
             $(this).on("change", function () {
+                tasksContainer.hide();
+                tasksSpinner.show();
                 var task = GetModelFromCheckBox(this);
-                $.post("/edit-task", task);
+                $.post("/edit-task", task, () => {
+                    setTimeout(() => {
+                        tasksContainer.show();
+                        tasksSpinner.hide();
+                    }, 500);
+                });
             });
         });
     }

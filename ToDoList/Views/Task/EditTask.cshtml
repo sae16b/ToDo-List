@@ -1,0 +1,56 @@
+﻿@model ToDoList.Models.LegionTask
+
+@{
+    ViewBag.Title = "Task Edit";
+}
+
+
+<div class="text-center" style="margin-top: 50px">
+    <p class="display-4">Edit Your Task</p>
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col-sm-12" id="tasksSpinner" style="margin-top: 40px">
+                <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status"></div>
+            </div>
+            <form class="col-sm-12 col-md-8" id="editTaskForm">
+                <div class="form-group" style="text-align: left;">
+                    <input type="text" class="form-control" id="taskText" placeholder='e.g. "do the dishes"' value="@Model.Text" />
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="margin-right: 30px">Edit task!</button>
+                <a href="/">Go back</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function GetTask() {
+        var id = "@Model.Id";
+        var text = $("#taskText").val();
+        return {
+            Id: id,
+            Text: text
+        }
+         
+    }
+
+    window.onload = function () {
+        var editTaskForm = $("#editTaskForm");
+        var tasksSpinner = $("#tasksSpinner");
+        tasksSpinner.hide();
+
+        editTaskForm.submit(() => {
+            editTaskForm.hide();
+            tasksSpinner.show();
+            var task = GetTask();
+            $.post("/edit-task", task, () => {
+                setTimeout(() => {
+                    editTaskForm.show();
+                    tasksSpinner.hide();
+                }, 500);
+            });
+            return false;
+        });
+    }
+</script> 
