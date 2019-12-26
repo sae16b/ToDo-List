@@ -58,8 +58,29 @@ namespace ToDoList.Controllers
         [HttpPost]
         public void TaskEdited(LegionTask editedLegionTask)
         {
-            db.LegionTask.Update(editedLegionTask);
+            LegionTask original = db.LegionTask.SingleOrDefault(t => t.Id == editedLegionTask.Id);
+            if (original == null)
+            {
+                return;
+            }
+
+            original.Text = editedLegionTask.Text;
+            original.Complete = editedLegionTask.Complete;
+
+            db.LegionTask.Update(original);
             db.SaveChanges();
+        }
+
+        [Route("delete-task/{legionTaskId}")]
+        [HttpPost]
+        public void TaskEdited(Guid legionTaskId)
+        {
+            LegionTask legionTask = db.LegionTask.SingleOrDefault(t => t.Id == legionTaskId);
+            if (legionTask != null)
+            {
+                db.LegionTask.Remove(legionTask);
+                db.SaveChanges();
+            }
         }
     }
 }

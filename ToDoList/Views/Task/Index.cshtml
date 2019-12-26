@@ -23,8 +23,8 @@
                     {
                         <tr id="@Task.Id">
                             <th scope="row">@i</th>
-                            <td id="@Task.Id-Text">
-                                <a href="/edit-task-page/@Task.Id" style="color: white;">@Task.Text</a>
+                            <td>
+                                <a href="/edit-task-page/@Task.Id" style="color: white;" id="@Task.Id-Text">@Task.Text</a>
                             </td>
                             <td>
                                 @if (Task.Complete)
@@ -78,7 +78,7 @@
                     setTimeout(() => {
                         tasksContainer.show();
                         tasksSpinner.hide();
-                    }, 500);
+                    }, 250);
                 });
             });
         });
