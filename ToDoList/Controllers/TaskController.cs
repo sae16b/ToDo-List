@@ -41,9 +41,15 @@ namespace ToDoList.Controllers
             return View(legionTask);
         }
 
-        [Route("add-task")]
+        [Route("create-task-page")]
+        public IActionResult CreateTask()
+        {
+            return View();
+        }
+
+        [Route("create-task")]
         [HttpPost]
-        public void AddTask(string text)
+        public void TaskCreated(string text)
         {
             LegionTask legionTask = new LegionTask()
             {

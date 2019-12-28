@@ -1,0 +1,76 @@
+﻿@{
+    ViewBag.Title = "Task Creation";
+}
+
+
+<div class="text-center" style="margin-top: 50px">
+    <p class="display-4">Create a Task</p>
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col-sm-12" id="tasksSpinner" style="margin-top: 40px">
+                <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status"></div>
+            </div>
+            <form class="col-sm-12 col-md-8" id="createTaskForm">
+                <div class="form-group" style="text-align: left;">
+                    <input type="text" class="form-control" id="taskText" placeholder='e.g. "do the dishes"' />
+                </div>
+
+                <button type="button" id="createTaskButton" class="btn btn-primary" style="margin-right: 30px">Create task!</button>
+                <a href="/">Cancel</a>
+            </form>
+        </div>
+    </div>
+    <div id="err-msg" class="alert alert-danger" style="margin-top: 50px" role="alert"></div>
+</div>
+
+<script>
+    function GetTask() {
+        var text = $("#taskText").val();
+        var task = {
+            Text: text,
+        };
+        return task;
+    }
+
+    function startSpinner(bool) {
+        var createTaskForm = $("#createTaskForm");
+        var tasksSpinner = $("#tasksSpinner");
+        if (!bool) {
+            tasksSpinner.hide();
+            createTaskForm.show();
+        } else {
+            tasksSpinner.show();
+            createTaskForm.hide();
+        }
+    }
+
+    function err(errMsg, t = 3000) {
+        var errDiv = $("#err-msg");
+        errDiv.text(errMsg);
+        errDiv.show();
+        setTimeout(() => {
+            errDiv.hide();
+        }, t);
+    }
+
+    window.onload = function () {
+        var createTaskButton = $("#createTaskButton");
+
+        $("#err-msg").hide();
+        startSpinner(false);
+
+        createTaskButton.click(() => {
+            startSpinner(true);
+
+            var task = GetTask();
+            if (task.Text == "") {
+                startSpinner(false);
+                err("Task cannot have empty text!")
+                return;
+            }
+            $.post(`/create-task`, task, () => {
+                window.location.replace("/");
+            });
+        });
+    }
+</script> 
